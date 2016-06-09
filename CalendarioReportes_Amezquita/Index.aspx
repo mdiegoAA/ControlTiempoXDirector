@@ -28,6 +28,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/i18n/defaults-*.min.js"></script>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+ <script src="bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+<script src="bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+   
 <script src="js/jquery.table2excel.js"></script>
 <link href="css/introLoader.min.css" rel="stylesheet" />
 <script src="js/jquery.introLoader.pack.min.js"></script>   
@@ -61,11 +65,16 @@
 <script>
 
     var idcliente;
-
+    var proyectoIdFijo="";
+    var servicioIdFijo = "";
+   
     $(document).ready(function () {
+
+       
        
         $("#element").introLoader();
-        CargarListadoClientes();
+       
+        CargarListadoDirectores();
         var generarReporte = $("#generarReporte");
         generarReporte.click(function () {
             DescargarDocumento();
@@ -87,50 +96,15 @@
         });
 
         var Consultar = $("#Consultar");
-      
+
         Consultar.click(function () {
 
-         
+            proyectosXDirector();
 
-            var proyectoId = $("#ListadoClientes option:selected").val();
-            var clienteId = $("#serviciosCliente option:selected").val();
-            var fechaInicial = $("#datepicker").val();
-            var fechaFinal = $("#datepicker2").val();
-
-            var data =
-                {
-                    idProyecto: proyectoId,
-                    idCliente: clienteId,
-                    fechaInicial: fechaInicial,
-                    fechaFinal: fechaFinal
-                }
-            $.ajax({
-
-                url: "Index.aspx/obtenerMeses_HorasxProyectoxClientexFechaInicio_final",
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(data),
-                dataType: "json",
-
-                success: function (result) {
-
-                    EliminarEventosCalendario();
-
-                    var data = JSON.parse(result.d);
-                    for (var i = 0; i < data.length - 1; i++) {
-
-                        var fecha = data[i].fecha;
-                        var title = data[i].tiempo;
-
-                        agregarEvento(title, fecha);
-
-                    }
-
-
-                }
-            });
         });
-
+      
+      
+    
 
         var ListadoClientes = $("#ListadoClientes");
         ListadoClientes.click(function () {
@@ -335,6 +309,127 @@
 
 
     }
+    function calendarioAgregar(idProyecto, idCliente) {
+        var proyectoId = idProyecto;
+        var clienteId = idCliente;
+        var fechaInicial = $("#datepicker").val();
+        var fechaFinal = $("#datepicker2").val();
+
+        var data =
+            {
+                idProyecto: proyectoId,
+                idCliente: clienteId,
+                fechaInicial: fechaInicial,
+                fechaFinal: fechaFinal
+            }
+        $.ajax({
+
+            url: "Index.aspx/obtenerMeses_HorasxProyectoxClientexFechaInicio_final",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            dataType: "json",
+
+            success: function (result) {
+
+              
+
+                EliminarEventosCalendario();
+
+                var data = JSON.parse(result.d);
+                for (var i = 0; i < data.length ; i++) {
+
+                    var fecha = data[i].fecha;
+                    var title = data[i].tiempo;
+
+                    agregarEvento(title, fecha);
+
+                }
+
+                var ModalCalendario = $("#ModalCalendario");
+                ModalCalendario.modal('hide');
+
+
+            }
+        });
+    };
+
+    function proyectosXDirector() {
+       // $("#element").introLoader();        
+        var directorId = $("#ListadoDirectores option:selected").val();       
+        var fechaInicial = $("#datepicker").val();
+        var fechaFinal = $("#datepicker2").val();
+
+        var data =
+            {
+                idDirector: directorId,
+                fechaInicial: fechaInicial,
+                fechaFinal: fechaFinal
+            }
+        $.ajax({
+
+            url: "Index.aspx/proyectosXDirector",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function (result) {
+
+              
+
+                var tablesRsult = $("#tablesRsult");
+                tablesRsult.empty();
+                var data = JSON.parse(result.d);
+                var temp = "";
+                temp +="<table class='table table-striped table-bordered table-hover' id='dataTables-example'>";
+                temp +="<thead>";
+                temp +="<tr>";
+                temp +="<th>Proyectos</th>";
+                temp +="<th>Servicio</th>";
+                temp +="<th>Tiempo</th>";
+                temp +="<th>Seleccionar</th>";
+                temp +="</tr>";
+                temp +="</thead>";
+                temp +="<tbody>";
+                for (var i = 0; i < data.length; i++) {
+                    console.log(data[i].ProyectoId);
+                    console.log(data[i].ServicioId);
+               //     var data = data[i].ProyectoId + "%" + data[i].ServicioId;
+                    temp += "<tr>";
+                    temp += "<td>" + LimpiarNombreCliente(data[i].NombreProyecto) + "</td>";
+                    temp += "<td>" + data[i].NombreServicio + "</td>";
+                    temp += "<td>" + reescribirFecha(data[i].Tiempo) + "</td>";
+                    temp += "<td><button class='btn btn-primary btn-sm' value=" + data[i].ProyectoId + "%" + data[i].ServicioId + " onClick='calendario(this.value)' type='submit'>Seleccionar</button></td>";
+                    temp += "</tr>";
+                }
+                temp +="</tbody>";
+                temp +="</table>";
+                tablesRsult.append(temp);
+                $('#dataTables-example').DataTable({
+                    responsive: true
+                });
+
+                var ModalCalendario = $("#ModalCalendario");
+                ModalCalendario.modal("show");
+
+            }
+        });
+
+
+
+    }
+
+    function calendario(id) {
+      
+        var index = id.indexOf("%");
+        var idProyecto = id.substring(0, index);
+        var idServicio = id.substring(index+1,id.length);
+      //  alert(idProyecto +" "+idServicio );
+        calendarioAgregar(idProyecto, idServicio);
+        proyectoIdFijo = idProyecto;
+        servicioIdFijo = idServicio;
+        
+    }
 
 	function ReporteTotalTiempo (){
 		
@@ -506,7 +601,7 @@
 	    var fecha = parseInt(data);
 	    var hora = parseInt(fecha / 60);
 	    var minutos = (fecha % 60);	   
-	    var result = hora + ":" + minutos;
+	    var result = hora + "H " + minutos + "M";
 
 	    return result;
 
@@ -514,8 +609,8 @@
 
     function traerTiempoxfecha_cargo(fecha) {
 
-        var proyectoId = $("#ListadoClientes option:selected").val();
-        var clienteId = $("#serviciosCliente option:selected").val();
+        var proyectoId = proyectoIdFijo;
+        var clienteId = servicioIdFijo;
         var diaSolicitado = fecha;
         
         var data =
@@ -535,6 +630,7 @@
             dataType: "json",
 
             success: function (result) {
+
 
               
                
@@ -748,10 +844,11 @@
        
     }
 
-    function CargarListadoClientes() {
-        $("#element").introLoader();
+    function CargarListadoDirectores() {
+       
+      //  $("#element").introLoader();
         $.ajax({
-            url: "Index.aspx/obtenerListadoClientes",
+            url: "Index.aspx/obtenerListadoDirectores",
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -759,18 +856,18 @@
 
                 var data = JSON.parse(result.d);
                 var temp = "";
-
-                temp += "<select  class='selectpicker form-control' data-live-search='true' title='Seleccione un cliente ...'>";
+                temp += "<select class='form-control'>";
+             //  temp += "<select  class='selectpicker form-control' data-live-search='true' title='Seleccione un cliente ...'>";
    
                 for (var i = 0; i < data.length; i++)
                 {
-                    temp += "<option value=" + data[i].ProyectoId + ">" + LimpiarNombreCliente(data[i].NombreProyecto) + "</option>";
+                    temp += "<option value=" + data[i].UsuarioId + ">" + data[i].Nombre + "</option>";
                 }
 
                 temp += "</select>";
-
-                var ListadoClientes = $("#ListadoClientes");
-               ListadoClientes.append(temp);
+              
+                var ListadoDirectores = $("#ListadoDirectores");
+                ListadoDirectores.append(temp);
                
              
             }
@@ -899,21 +996,23 @@
         
        
     </div>
+    </div>
     <br />
+    <div class="container">
     <div class="row">
       
         <div class="col-md-1">
         </div>
         <div class="col-md-4">          
             <div class="form-group">
-                <label>Cliente</label>
+                <label>Dierector</label>
 
               <%--  <select class="form-control" id="ListadoClientes">
                 </select>--%>
                 <div class="form-inline">
                     <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></span>
-                       <div id="ListadoClientes">
+                        
+                       <div id="ListadoDirectores">
 
                        </div>
                     </div>
@@ -921,59 +1020,88 @@
                   
             </div>
          </div>   
-          <div class="col-md-4">            
+          <div class="col-md-2">            
           <div class="form-group">
-                <label>Servicio</label>
-                <select class="form-control" id="serviciosCliente">
-
-                    
-                </select>
+                <label>Fecha Inicial</label>
+              <input type="text" placeholder="Fecha Archivo" id="datepicker" class="form-control">              
             </div>
-         </div>   
+         </div>  
+         <div class="col-md-2">            
+          <div class="form-group">
+                <label>Fecha Final</label>
+             <input type="text" placeholder="Fecha Archivo" id="datepicker2" class="form-control">              
+            </div>
+         </div>  
         
          <div class="col-md-2"> 
                <label style="color:white">Servicio</label>  
               <button type="button" id="Consultar" class="btn btn-primary form-control">Consultar</button>      
           </div>
-    </div>
-    <br/>
-  
-
-    <div class="row">
-         <div class="col-md-1"></div>         
-        
-          <div class="col-md-4">
-                <input type="text" placeholder="Fecha Archivo" id="datepicker" class="form-control">                         
-          </div>
-         
-         <div class="col-md-4">
-                <input type="text" placeholder="Fecha Archivo" id="datepicker2" class="form-control">                         
-          </div>
-    
-         <div class="col-md-2">   
+          <%--<div class="col-md-2">  
+               <label style="color:white">Consultar</label>  
               <button type="button" id="Reporte" class="btn btn-primary form-control">Reporte</button>      
-          </div>
-
+          </div>--%>
     </div>
-    <br/>  
-    <div class="row">
-        <div class="col-md-4">
-           Total Tiempo
-        </div>
-    </div> 
-      </div>
-    
-    <br />
-    <br />
-
+  
      
-    <br />
-
-    <div class="row">
+     </div>
+    <br/>
+   <div class="container">
+       <div class="row">
           <div class="col-md-12">
             <div id='calendar'></div>
           </div>
      </div> 
+    </div>
+  
+
+   
+
+    
+
+
+    <div class="modal fade bs-example-modal-lg" id="ModalCalendario" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"></h4>
+      </div>
+      <div class="modal-body">
+       <div class="row">
+          <div class="col-md-12">
+              <div class="row">
+        <div class="col-md-1">
+        </div>
+                <div class="col-lg-10">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                           Tabla Proyectos
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="dataTable_wrapper">
+                                <div id="tablesRsult"></div>
+                            </div>
+                            <!-- /.table-responsive -->
+                       
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+          </div>
+     </div> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+ </div>
+</div>
 
     <div class="modal fade" tabindex="-1" id="Modaltree" role="dialog">
   <div class="modal-dialog">
@@ -983,6 +1111,7 @@
         <h4 class="modal-title">Modal title</h4>
       </div>
       <div class="modal-body">
+
         
       </div>
       <div class="modal-footer">

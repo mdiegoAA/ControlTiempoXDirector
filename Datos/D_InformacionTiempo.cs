@@ -48,6 +48,74 @@ namespace Datos
 
       }
 
+      public string obtenerListadoDirectores()
+      {
+
+          SqlCommand cmd = new SqlCommand("sp_Amezquita_ObtenerListadoDirectores", conn);
+          cmd.CommandType = CommandType.StoredProcedure;
+          //     cmd.Parameters.AddWithValue("@IdUsuario", id);
+          try
+          {
+
+              abrirConexion();
+              cmd.ExecuteReader();
+
+              cerrarConexion();
+              SqlDataAdapter das = new SqlDataAdapter(cmd);
+              DataTable datasets = new DataTable();
+              das.Fill(datasets);
+              string data = JsonConvert.SerializeObject(datasets, Formatting.Indented);
+              return data;
+
+
+          }
+          catch (Exception)
+          {
+              cerrarConexion();
+              throw;
+          }
+
+
+      }
+
+      public string proyectosXDirector(string idDirector , string fechaInicial , string fechaFinal)
+      {
+
+          fechaInicial = formatoFechas(fechaInicial);
+          fechaInicial = fechaInicial + " 00:00:00";
+          fechaFinal = formatoFechas(fechaFinal);
+          fechaFinal = fechaFinal + " 23:59:00";
+
+          SqlCommand cmd = new SqlCommand("sp_Amezquita_ProyectosDirector", conn);
+          cmd.CommandType = CommandType.StoredProcedure;
+          cmd.Parameters.AddWithValue("@fechaInicial", fechaInicial);
+          cmd.Parameters.AddWithValue("@fechaFinal", fechaFinal);
+          cmd.Parameters.AddWithValue("@idDirector", idDirector);
+          //     cmd.Parameters.AddWithValue("@IdUsuario", id);
+          try
+          {
+
+              abrirConexion();
+              cmd.ExecuteReader();
+
+              cerrarConexion();
+              SqlDataAdapter das = new SqlDataAdapter(cmd);
+              DataTable datasets = new DataTable();
+              das.Fill(datasets);
+              string data = JsonConvert.SerializeObject(datasets, Formatting.Indented);
+              return data;
+
+
+          }
+          catch (Exception)
+          {
+              cerrarConexion();
+              throw;
+          }
+
+
+      }
+
 
       public DataTable traerEmpleadosxFecha_Cargo(string fecha, string idPoryecto, string idServicio, string cargos)
       {

@@ -24,6 +24,19 @@ namespace CalendarioReportes_Amezquita
             return rSult;
         
         }
+         [WebMethod]
+        public static string proyectosXDirector(string idDirector, string fechaInicial, string fechaFinal)
+        {
+
+            string rSult = N_informacionControlTiempos.proyectosXDirector(idDirector ,formatoFechas(fechaInicial),formatoFechas(fechaFinal));
+            return rSult;
+         }
+        [WebMethod]
+        public static string obtenerListadoDirectores()
+        {
+            string Rsult = N_informacionControlTiempos.obtenerListadoDirectores();
+            return Rsult;
+        }
 
         [WebMethod]
         public static string ObtenerListadoServicioXcliente(string idArchivo) {

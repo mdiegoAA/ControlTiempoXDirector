@@ -9,3 +9,14 @@ C:\Users\mdiego\Desktop\Publicacion\CalendarioReportes_Amezquita\Negocios\bin\De
 C:\Users\mdiego\Desktop\Publicacion\CalendarioReportes_Amezquita\Negocios\bin\Debug\Newtonsoft.Json.xml
 C:\Users\mdiego\Desktop\Publicacion\CalendarioReportes_Amezquita\Negocios\bin\Debug\Entidades.dll
 C:\Users\mdiego\Desktop\Publicacion\CalendarioReportes_Amezquita\Negocios\bin\Debug\Entidades.pdb
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\bin\Debug\Negocios.dll
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\bin\Debug\Negocios.pdb
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\bin\Debug\Datos.dll
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\bin\Debug\Newtonsoft.Json.dll
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\bin\Debug\Entidades.dll
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\bin\Debug\Datos.pdb
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\bin\Debug\Newtonsoft.Json.xml
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\bin\Debug\Entidades.pdb
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\obj\Debug\Negocios.csprojResolveAssemblyReference.cache
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\obj\Debug\Negocios.dll
+D:\Reporsitorio\ControlTeimpoDirector\ControlTiempoXDirector\Negocios\obj\Debug\Negocios.pdb

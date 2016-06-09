@@ -32,8 +32,19 @@ namespace Negocios
             return informacionControlTiempos.ListadoMesesxProyectoxServicioxMeses(idProyecto, idCliente, fechaInicial, fechaFinal);
         
         }
+        public string obtenerListadoDirectores()
+        {
 
-      
+            return informacionControlTiempos.obtenerListadoDirectores();
+        
+        }
+
+        public string proyectosXDirector(string idDirector, string fechaInicial, string fechaFinal) {
+
+            return informacionControlTiempos.proyectosXDirector(idDirector , fechaInicial , fechaFinal);
+        
+        }
+
         public string traerTiempoxfecha_cargo(string fecha, string idPoryecto, string idServicio)
         {
 

@@ -1,11 +1,11 @@
 -- Procedimiento que obtiene el listado Clientes
-Create procedure [dbo].[obtenerListadoClientes] 
+Create procedure obtenerListadoClientes
 as
 select distinct ProyectoId as ProyectoId ,NombreProyecto as NombreProyecto
 from Proyectos
 order by NombreProyecto asc
 ---------------------------------------------------------
-Create procedure [dbo].[Sp_Amezquita_ListadoMesesxProyectoxServicioxMeses](
+Create procedure Sp_Amezquita_ListadoMesesxProyectoxServicioxMeses(
 	
 	@fechainicial varchar(100),
 	@fechaFinal varchar(100),
@@ -23,13 +23,13 @@ and ch.ServicioId = @ServicioId
 and ch.FechaInicio BETWEEN @fechainicial AND @fechaFinal
 group by ch.FechaInicio
 ----------------------------------------------------------
-create procedure [dbo].[Sp_Amezquita_obtenerListadoClientes] 
+create procedure Sp_Amezquita_obtenerListadoClientes
 as
 select distinct ch.ProyectoId , p.NombreProyecto from CarguesHoras as ch  , Proyectos p
 where ch.ProyectoId = p.ProyectoId    
 order by p.NombreProyecto  
 ----------------------------------------------------------
-create procedure [dbo].[Sp_Amezquita_ObtenerListadoServicioXcliente](
+create procedure Sp_Amezquita_ObtenerListadoServicioXcliente(
 	
 	@idProyecto varchar(max)
 
@@ -41,7 +41,7 @@ where  ch.ServicioId = s.ServicioId
 and ch.ProyectoId = @idProyecto
 order by s.NombreServicio
 -----------------------------------------------------------
-create procedure [dbo].[Sp_Amezquita_ObtenerMinutosxMesesxProyectoxServicioxMeses](
+create procedure Sp_Amezquita_ObtenerMinutosxMesesxProyectoxServicioxMeses(
 	
 	@fechainicial varchar(100),
 	@fechaFinal varchar(100),
@@ -55,7 +55,7 @@ as
   and ProyectoId = @proyectoId
  and ServicioId = @ServicioId
 -------------------------------------------------------------
-create procedure [dbo].[sp_Amezquita_SeleccionarMesXrango](
+create procedure sp_Amezquita_SeleccionarMesXrango(
 	
 	@fechaInicio varchar(100),
 	@fechaFinal varchar(100),
@@ -73,7 +73,7 @@ ch.ProyectoId = @idProyecto
 and ch.ServicioId = @idServicio
 and FechaInicio BETWEEN @fechaInicio AND @fechaFinal
 ---------------------------------------------------------------
-create procedure [dbo].[sp_amezquita_traerEmpleadosxFecha_Cargo](
+create procedure sp_amezquita_traerEmpleadosxFecha_Cargo(
 	
 	@fechaInicial varchar(100),
 	@fechaFinal varchar(100),
@@ -94,7 +94,7 @@ and ch.FechaInicio BETWEEN @fechaInicial AND @fechaFinal
 group by u.Nombre , cg.CargoId
 end
 ---------------------------------------------------------------
-create procedure [dbo].[sp_amezquita_traerTiempoxfecha_cargo](
+create procedure sp_amezquita_traerTiempoxfecha_cargo(
 	
 	
 	@fechainicial varchar(100),
@@ -112,7 +112,5 @@ and ch.ServicioId = @idServicio
 and ch.UsuarioId = us.UsuarioId
 and c.CargoId = us.CargoId
 group by c.NombreCargo , c.CargoId
-
-
 
 
